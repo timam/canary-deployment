@@ -21,7 +21,14 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
+      canaryService: canary-service
+      stableService: stable-service
       steps:
         - setCanaryScale:
-          replicas: 1
+            replicas: 1
         - pause: {}
+#      trafficRouting:
+#        alb:
+#          rootService: root-service
+#          ingress: demo-ingress
+#          service: alb-service
