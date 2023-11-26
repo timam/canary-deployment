@@ -53,7 +53,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: action1
+                name: rollouts-demo-stable
                 port:
                   name: use-annotation
 ---
