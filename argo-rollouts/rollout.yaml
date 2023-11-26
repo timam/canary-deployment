@@ -88,18 +88,16 @@ spec:
           rootService: rollouts-demo-stable
           servicePort: 8080
       steps:
-        - setWeight: 20
-        - pause: {}
         - setHeaderRoute:
             name: header-route
             match:
-              - headerName: Custom-Header
+              - headerName: User-Agent
                 headerValue:
-                  exact: Mozilla*
+                  prefix: Mozill*
         - pause: {}
         - setHeaderRoute:
             name: header-route
-        - pause: {}
+        - pause: { }
 
 
 #
