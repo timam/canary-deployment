@@ -89,19 +89,16 @@ spec:
       stableService: stable-service
       canaryService: canary-service
       steps:
-        - setCanaryScale:
-            matchTrafficWeight: true
-        - pause: { }
+        - setWeight: 20
         - setHeaderRoute:
             name: header-route
             match:
               - headerName: Custom-Header
                 headerValue:
                   exact: Mozilla*
-        - pause: { }
-        - setHeaderRoute:
-            name: header-route
-        - pause: { }
+        - pause: {}
+        - setHeaderRouting: {}
+        - pause: {}
 
 #
 #  strategy:
