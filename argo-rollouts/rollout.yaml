@@ -1,126 +1,69 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: canary-service
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
-      name: http
-  selector:
-    app: alb-rollout
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: stable-service
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
-      name: http
-  selector:
-    app: alb-rollout
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: alb-rollout-ingress
+  name: rollouts-ingress
   annotations:
-    alb.ingress.kubernetes.io/security-groups: 'sg-0aa6c158c9b4a6638'
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/load-balancer-name: rollouts-sample
-    alb.ingress.kubernetes.io/target-type: instance
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/healthcheck-path: /color
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/subnets: subnet-0405af5ceaafdd67a, subnet-0088dc02ee475d957, subnet-025385e7e55b371a6
+    kubernetes.io/ingress.class: nginx
 spec:
   rules:
     - http:
         paths:
-          - path: /*
-            pathType: ImplementationSpecific
+          - path: /
+            pathType: Prefix
             backend:
               service:
-                name: rollouts-demo-stable #action1
+                name: rollouts-demo
                 port:
-                  name: use-annotation
+                  number: 80
 ---
+
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: rollouts-demo
 spec:
-  replicas: 6
-  minReadySeconds: 30
+  replicas: 5
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {}
+        - setWeight: 40
+        - pause: {duration: 10}
+        - setWeight: 60
+        - pause: {duration: 10}
+        - setWeight: 80
+        - pause: {duration: 10}
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: alb-rollout
+      app: rollouts-demo
   template:
     metadata:
       labels:
-        app: alb-rollout
+        app: rollouts-demo
     spec:
       containers:
-        - name: alb-rollout
-          image: "argoproj/rollouts-demo:green"
+        - name: rollouts-demo
+          image: argoproj/rollouts-demo:blue
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
-  strategy:
-    canary:
-      trafficRouting:
-        managedRoutes:
-          - name: header-route
-        alb:
-          ingress: alb-rollout-ingress
-          rootService: rollouts-demo-stable
-          servicePort: 8080
-      scaleDownDelaySeconds: 30
-      stableService: stable-service
-      canaryService: canary-service
-      steps:
-        - setWeight: 20
-        - setHeaderRoute:
-            name: header-route
-            match:
-              - headerName: Custom-Header
-                headerValue:
-                  exact: Mozilla*
-        - pause: {}
-        - setWeight: 100
-
-
-#
-#  strategy:
-#    canary:
-#      scaleDownDelaySeconds: 60
-#      stableService: stable-service
-#      canaryService: canary-service
-#      trafficRouting:
-#        managedRoutes:
-#          - name: header-route
-#        alb:
-#          ingress: alb-rollout-ingress
-#          rootService: rollouts-demo-stable #action1
-#          servicePort: 8080
-#      steps:
-#        - setHeaderRoute:
-#            name: header-route
-#            match:
-#              - headerName: Custom-Header
-#                headerValue:
-#                  exact: Mozilla*
-#        - setWeight: 0
-#        - setWeight: 100
-#        - pause: {}
-
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 5m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rollouts-demo
+spec:
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: rollouts-demo
