@@ -19,7 +19,6 @@ spec:
         - setWeight: 0
         -  pause: {}
         - setWeight: 100
-          pause: {duration: 10}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
