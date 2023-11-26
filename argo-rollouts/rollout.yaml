@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: rollouts-demo
-          image: timam/canary-poc:001
+          image: timam/canary-poc:002
           ports:
             - name: http
               containerPort: 8080
