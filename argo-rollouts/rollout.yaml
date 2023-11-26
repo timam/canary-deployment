@@ -15,7 +15,7 @@ spec:
             canary-by-header: User-Agent
             canary-by-header-value: Firefox
       steps:
-        - setWeight: 10
+        - setWeight: 0
         - pause: {}
         - setWeight: 100
   revisionHistoryLimit: 2
