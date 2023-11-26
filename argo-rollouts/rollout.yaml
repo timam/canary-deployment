@@ -1,65 +1,9 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: canary-service
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
-      name: http
-  selector:
-    app: alb-rollout
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: stable-service
-spec:
-  type: NodePort
-  ports:
-    - port: 8080
-      targetPort: 8080
-      protocol: TCP
-      name: http
-  selector:
-    app: alb-rollout
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: alb-rollout-ingress
-  annotations:
-    alb.ingress.kubernetes.io/security-groups: 'sg-0aa6c158c9b4a6638'
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/load-balancer-name: rollouts-sample
-    alb.ingress.kubernetes.io/target-type: instance
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/healthcheck-path: /color
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/subnets: subnet-0405af5ceaafdd67a, subnet-0088dc02ee475d957, subnet-025385e7e55b371a6
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /*
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: rollouts-demo-stable #action1
-                port:
-                  name: use-annotation
----
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: rollouts-demo
 spec:
-  replicas: 5
+  replicas: 6
   selector:
     matchLabels:
       app: alb-rollout
@@ -77,7 +21,7 @@ spec:
               protocol: TCP
   strategy:
     canary:
-      scaleDownDelaySeconds: 5
+      scaleDownDelaySeconds: 60
       stableService: stable-service
       canaryService: canary-service
       trafficRouting:
@@ -94,6 +38,5 @@ spec:
               - headerName: Custom-Header
                 headerValue:
                   exact: Mozilla*
-        - setWeight: 10
+        - setWeight: 100
         - pause: {}
-
