@@ -95,5 +95,6 @@ spec:
                 headerValue:
                   exact: Mozilla*
         - setWeight: 0
+        - setWeight: 100
         - pause: {}
 
