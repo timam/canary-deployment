@@ -85,7 +85,7 @@ spec:
           - name: header-route
         alb:
           ingress: alb-rollout-ingress
-          rootService: action1
+          rootService: rollouts-demo-stable
           servicePort: 8080
       steps:
         - setWeight: 20
