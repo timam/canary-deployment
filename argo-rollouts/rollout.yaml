@@ -32,7 +32,7 @@ metadata:
   name: alb-rollout-ingress
   annotations:
     alb.ingress.kubernetes.io/security-groups: 'sg-0aa6c158c9b4a6638'
-    kubernetes.io/ingress.class: aws-alb
+    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/load-balancer-name: rollouts-sample
     alb.ingress.kubernetes.io/target-type: instance
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
