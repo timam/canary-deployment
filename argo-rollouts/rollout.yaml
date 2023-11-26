@@ -88,6 +88,17 @@ spec:
         - setWeight: 100
         - pause: {}
       trafficRouting:
+        managedRoutes:
+          - name: header-route
+            match:
+              - headerName: Custom-Header
+                headerValue:
+                  exact: Mozilla*
+          - name: default-route
+            match:
+              - headerName: Custom-Header
+                headerValue:
+                  exact: ""
         alb:
           ingress: alb-rollout-ingress
           rootService: rollouts-demo-stable
@@ -95,6 +106,7 @@ spec:
       stableService: stable-service
       canaryService: canary-service
       scaleDownDelaySeconds: 60
+
 #
 #  strategy:
 #    canary:
