@@ -78,10 +78,6 @@ spec:
               protocol: TCP
   strategy:
     canary:
-#      maxSurge: 20
-      scaleDownDelaySeconds: 5
-      stableService: stable-service
-      canaryService: canary-service
       trafficRouting:
         managedRoutes:
           - name: header-route
@@ -89,16 +85,23 @@ spec:
           ingress: alb-rollout-ingress
           rootService: rollouts-demo-stable
           servicePort: 8080
+      scaleDownDelaySeconds: 30
+      stableService: stable-service
+      canaryService: canary-service
       steps:
         - setCanaryScale:
             matchTrafficWeight: true
+        - pause: { }
         - setHeaderRoute:
             name: header-route
             match:
-              - headerName: User-Agent
+              - headerName: Custom-Header
                 headerValue:
-                  exact: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0
-        - pause: {}
+                  exact: Mozilla*
+        - pause: { }
+        - setHeaderRoute:
+            name: header-route
+        - pause: { }
 
 #
 #  strategy:
