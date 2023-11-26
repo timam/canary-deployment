@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: rollouts-canary-demo
+  name: rollouts-demo
 spec:
   replicas: 3
   selector:
@@ -21,14 +21,10 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
-      canaryService: canary-service
-      stableService: stable-service
-      steps:
-        - setCanaryScale:
-            replicas: 1
-        - pause: {}
-#      trafficRouting:
-#        alb:
-#          rootService: root-service
-#          ingress: demo-ingress
-#          service: alb-service
+      canaryService: rollouts-demo-canary
+      stableService: rollouts-demo-stable
+      trafficRouting:
+        alb:
+          rootService: rollouts-demo-root
+          ingress: rollouts-demo-ingress
+          servicePort: 443
