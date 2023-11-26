@@ -60,6 +60,7 @@ metadata:
   name: rollouts-demo
 spec:
   replicas: 6
+  minReadySeconds: 30
   selector:
     matchLabels:
       app: alb-rollout
@@ -90,7 +91,7 @@ spec:
           servicePort: 8080
       steps:
         - setCanaryScale:
-            replicas: 1
+            matchTrafficWeight: true
         - setHeaderRoute:
             name: header-route
             match:
