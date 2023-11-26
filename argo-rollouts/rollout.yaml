@@ -7,13 +7,13 @@ spec:
   strategy:
     canary:
       stableService: rollouts-ingress-stable
+      canaryService: rollouts-ingress-canary
       trafficRouting:
         nginx:
           stableIngress: rollouts-ingress
           additionalIngressAnnotations:
             canary-by-header: User-Agent
             canary-by-header-value: Firefox
-#          header: "User-Agent=Firefox"
       steps:
         - setWeight: 0
         - pause: {}
