@@ -71,7 +71,7 @@ spec:
     app: rollouts-demo
   ports:
     - port: 80
-      targetPort: http
+      targetPort: 8080
       protocol: TCP
       name: http
 ---
@@ -80,10 +80,10 @@ kind: Service
 metadata:
   name: rollouts-ingress-canary
 spec:
-  ports:
-    - port: 80
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
     app: rollouts-demo
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
