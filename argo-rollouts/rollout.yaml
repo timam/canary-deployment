@@ -6,16 +6,21 @@ spec:
   replicas: 5
   strategy:
     canary:
+      stableService: rollouts-ingress-stable
+      canaryService: rollouts-ingress-canary
+      trafficRouting:
+        nginx:
+          stableIngress: rollouts-ingress-stable
+          canaryIngress: rollouts-ingress-canary
+          additionalIngressAnnotations:
+            canary-by-header: User-Agent
+            canary-by-header-value: Firefox
+#          header: "User-Agent=Firefox"
       steps:
         - setWeight: 0
           pause: {}
         - setWeight: 100
           pause: {duration: 10}
-      trafficRouting:
-        nginx:
-          stableIngress: rollouts-ingress-stable
-          canaryIngress: rollouts-ingress-canary
-          header: "User-Agent=Firefox"
   revisionHistoryLimit: 2
   selector:
     matchLabels:
