@@ -50,7 +50,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: rollouts-demo-stable
+                name: rollouts-demo-stable #action1
                 port:
                   name: use-annotation
 ---
@@ -85,19 +85,14 @@ spec:
           - name: header-route
         alb:
           ingress: alb-rollout-ingress
-          rootService: action1
+          rootService: rollouts-demo-stable #action1
           servicePort: 8080
       steps:
-        - setWeight: 20
-        - pause: {}
         - setHeaderRoute:
             name: header-route
             match:
               - headerName: Custom-Header
                 headerValue:
                   exact: Mozilla*
-        - pause: {}
-        - setHeaderRoute:
-            name: header-route
         - pause: {}
 
