@@ -21,12 +21,11 @@ spec:
   revisionHistoryLimit: 3
   strategy:
     canary:
-      canaryService: rollouts-demo-canary
       stableService: rollouts-demo-stable
+      canaryService: rollouts-demo-canary
       trafficRouting:
         alb:
           ingress: rollouts-demo-ingress
-          rootService: root-service
           servicePort: 80
 ---
 apiVersion: v1
@@ -67,24 +66,6 @@ metadata:
     alb.ingress.kubernetes.io/target-type: "instance"
     alb.ingress.kubernetes.io/security-groups:  "sg-0aa6c158c9b4a6638"
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/actions.root-service: |
-      {
-        "Type":"forward",
-        "ForwardConfig":{
-          "TargetGroups":[
-            {
-                "Weight":10,
-                "ServiceName":"rollouts-demo-canary",
-                "ServicePort":"80"
-            },
-            {
-                "Weight":90,
-                "ServiceName":"rollouts-demo-stable",
-                "ServicePort":"80"
-            }
-          ]
-        }
-      }
 
 spec:
   rules:
@@ -94,6 +75,6 @@ spec:
             path: "/"
             backend:
               service:
-                name: root-service
+                name: rollouts-demo-stable
                 port:
-                  name: use-annotation
+                  number: 80
