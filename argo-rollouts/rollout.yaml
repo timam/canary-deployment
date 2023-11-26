@@ -25,8 +25,8 @@ spec:
       stableService: rollouts-demo-stable
       trafficRouting:
         alb:
-          rootService: rollouts-demo-root
           ingress: rollouts-demo-ingress
+          rootService: root-service
           servicePort: 80
 ---
 apiVersion: v1
@@ -76,6 +76,6 @@ spec:
             path: "/"
             backend:
               service:
-                name: rollouts-demo-root
+                name: root-service
                 port:
-                  number: 80
+                  name: use-annotation
