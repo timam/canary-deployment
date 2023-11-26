@@ -15,8 +15,9 @@ spec:
             canary-by-header: User-Agent
             canary-by-header-value: Firefox
       steps:
+        - setWeight: 0
         - setCanaryScale:
-            matchTrafficWeight: true
+            replicas: 1
         - pause: {}
         - setWeight: 100
   revisionHistoryLimit: 2
@@ -30,7 +31,7 @@ spec:
     spec:
       containers:
         - name: rollouts-demo
-          image: timam/canary-poc:003
+          image: timam/canary-poc:004
           ports:
             - name: http
               containerPort: 8080
