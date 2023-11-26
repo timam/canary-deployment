@@ -14,7 +14,6 @@ spec:
     spec:
       containers:
         - name: nginx
-          args: [--aws-verify-target-group]
           image: nginx:1.15.4
           ports:
             - containerPort: 80
@@ -68,6 +67,24 @@ metadata:
     alb.ingress.kubernetes.io/target-type: "instance"
     alb.ingress.kubernetes.io/security-groups:  "sg-0aa6c158c9b4a6638"
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/actions.root-service: |
+      {
+        "Type":"forward",
+        "ForwardConfig":{
+          "TargetGroups":[
+            {
+                "Weight":10,
+                "ServiceName":"canary-service",
+                "ServicePort":"80"
+            },
+            {
+                "Weight":90,
+                "ServiceName":"stable-service",
+                "ServicePort":"80"
+            }
+          ]
+        }
+      }
 
 spec:
   rules:
