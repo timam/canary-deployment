@@ -77,7 +77,6 @@ spec:
               protocol: TCP
   strategy:
     canary:
-      maxSurge: 20
       scaleDownDelaySeconds: 5
       stableService: stable-service
       canaryService: canary-service
@@ -89,6 +88,8 @@ spec:
           rootService: rollouts-demo-stable
           servicePort: 8080
       steps:
+        - setCanaryScale:
+            replicas: 1
         - setHeaderRoute:
             name: header-route
             match:
