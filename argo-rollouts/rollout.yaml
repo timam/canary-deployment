@@ -7,7 +7,6 @@ spec:
   strategy:
     canary:
       stableService: rollouts-ingress-stable
-      canaryService: rollouts-ingress-canary
       trafficRouting:
         nginx:
           stableIngress: rollouts-ingress
@@ -58,7 +57,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: rollouts-demo
+                name: rollouts-ingress-stable
                 port:
                   number: 80
 
