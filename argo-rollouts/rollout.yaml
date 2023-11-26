@@ -77,16 +77,6 @@ spec:
               protocol: TCP
   strategy:
     canary:
-      scaleDownDelaySeconds: 60
-      stableService: stable-service
-      canaryService: canary-service
-      trafficRouting:
-        managedRoutes:
-          - name: header-route
-        alb:
-          ingress: alb-rollout-ingress
-          rootService: rollouts-demo-stable #action1
-          servicePort: 8080
       steps:
         - setHeaderRoute:
             name: header-route
@@ -97,4 +87,35 @@ spec:
         - setWeight: 0
         - setWeight: 100
         - pause: {}
+      trafficRouting:
+        alb:
+          ingress: alb-rollout-ingress
+          rootService: rollouts-demo-stable
+          servicePort: 8080
+      stableService: stable-service
+      canaryService: canary-service
+      scaleDownDelaySeconds: 60
+#
+#  strategy:
+#    canary:
+#      scaleDownDelaySeconds: 60
+#      stableService: stable-service
+#      canaryService: canary-service
+#      trafficRouting:
+#        managedRoutes:
+#          - name: header-route
+#        alb:
+#          ingress: alb-rollout-ingress
+#          rootService: rollouts-demo-stable #action1
+#          servicePort: 8080
+#      steps:
+#        - setHeaderRoute:
+#            name: header-route
+#            match:
+#              - headerName: Custom-Header
+#                headerValue:
+#                  exact: Mozilla*
+#        - setWeight: 0
+#        - setWeight: 100
+#        - pause: {}
 
