@@ -44,9 +44,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: rollouts-ingress-stable
+  name: rollouts-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-by-header: "User-Agent"
+    nginx.ingress.kubernetes.io/canary-by-header-value: "Firefox"
 spec:
   rules:
     - host: demo.rollouts.io
@@ -57,26 +60,6 @@ spec:
             backend:
               service:
                 name: rollouts-demo
-                port:
-                  number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: rollouts-ingress-canary
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/canary-by-header: "User-Agent=Firefox"
-spec:
-  rules:
-    - host: demo.rollouts.io
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: rollouts-demo-canary
                 port:
                   number: 80
 
