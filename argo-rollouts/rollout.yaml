@@ -99,10 +99,6 @@ spec:
                 headerValue:
                   exact: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0
         - pause: {}
-        - setHeaderRoute:
-            name: header-route
-        - pause: { }
-
 
 #
 #  strategy:
