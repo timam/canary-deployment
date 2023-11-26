@@ -6,7 +6,8 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - http:
+    - host: demo.rollouts.io
+      http:
         paths:
           - path: /
             pathType: Prefix
@@ -16,7 +17,6 @@ spec:
                 port:
                   number: 80
 ---
-
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
