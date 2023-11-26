@@ -17,7 +17,7 @@ spec:
 #          header: "User-Agent=Firefox"
       steps:
         - setWeight: 0
-        -  pause: {}
+        - pause: {}
         - setWeight: 100
   revisionHistoryLimit: 2
   selector:
