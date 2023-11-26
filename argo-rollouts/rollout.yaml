@@ -94,5 +94,6 @@ spec:
               - headerName: Custom-Header
                 headerValue:
                   exact: Mozilla*
-        - setWeight: 100
+        - setWeight: 0
         - pause: {}
+
