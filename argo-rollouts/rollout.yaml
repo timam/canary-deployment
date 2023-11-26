@@ -97,8 +97,8 @@ spec:
                 headerValue:
                   exact: Mozilla*
         - pause: {}
-        - setHeaderRouting: {}
-        - pause: {}
+        - setWeight: 100
+
 
 #
 #  strategy:
