@@ -10,7 +10,7 @@ spec:
       canaryService: rollouts-ingress-canary
       trafficRouting:
         nginx:
-          stableIngress: rollouts-ingress-stable
+          stableIngress: rollouts-ingress
           additionalIngressAnnotations:
             canary-by-header: User-Agent
             canary-by-header-value: Firefox
