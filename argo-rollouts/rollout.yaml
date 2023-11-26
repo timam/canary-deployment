@@ -15,7 +15,8 @@ spec:
             canary-by-header: User-Agent
             canary-by-header-value: Firefox
       steps:
-        - setWeight: 0
+        - setCanaryScale:
+            matchTrafficWeight: true
         - pause: {}
         - setWeight: 100
   revisionHistoryLimit: 2
@@ -38,6 +39,7 @@ spec:
             requests:
               memory: 32Mi
               cpu: 5m
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
