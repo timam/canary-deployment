@@ -77,6 +77,7 @@ spec:
               protocol: TCP
   strategy:
     canary:
+      maxSurge: 20
       scaleDownDelaySeconds: 5
       stableService: stable-service
       canaryService: canary-service
