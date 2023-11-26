@@ -70,7 +70,7 @@ spec:
     spec:
       containers:
         - name: alb-rollout
-          image: "argoproj/rollouts-demo:bad-yellow"
+          image: "argoproj/rollouts-demo:green"
           ports:
             - name: http
               containerPort: 8080
