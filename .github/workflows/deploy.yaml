@@ -8,9 +8,6 @@ on:
 jobs:
   build-push-artifact:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: './api'
 
     steps:
       - name: Checkout
