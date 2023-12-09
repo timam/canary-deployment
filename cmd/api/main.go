@@ -43,14 +43,14 @@ type PokemonsResponse struct {
 }
 
 func listPokemonsHandler(w http.ResponseWriter, r *http.Request) {
-	printAnnotations()
+	printRoleLabel()
 
 	pokemons := getAllPokemons()
 	response := PokemonsResponse{Pokemons: pokemons}
 	json.NewEncoder(w).Encode(response)
 }
 
-func printAnnotations() {
+func printRoleLabel() {
 	config, _ := rest.InClusterConfig()
 	clientset, _ := kubernetes.NewForConfig(config)
 
@@ -61,10 +61,10 @@ func printAnnotations() {
 	defer cancel()
 
 	pod, _ := clientset.CoreV1().Pods(namespace).Get(ctx, podName, metav1.GetOptions{})
-	annotations := pod.GetAnnotations()
+	labels := pod.GetLabels()
 
-	for key, value := range annotations {
-		fmt.Printf("%s: %s\n", key, value)
+	if role, ok := labels["role"]; ok {
+		fmt.Println(role)
 	}
 
 	cancel() // Cancel the context as soon as we're done with it
