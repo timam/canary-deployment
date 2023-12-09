@@ -1,15 +1,43 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
+	"os"
+	"strings"
 )
 
-func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Welcome!!!!\n")
-	})
+type Pokemon struct {
+	Name string `json:"name"`
+}
 
-	fmt.Println("Server listening on :8080")
+func getPokemonFromEnv() []Pokemon {
+	var pokemons []Pokemon
+	for _, e := range os.Environ() {
+		pair := strings.SplitN(e, "=", 2)
+		if strings.HasPrefix(pair[0], "POKEMON_") {
+			pokemons = append(pokemons, Pokemon{Name: pair[1]})
+		}
+	}
+	return pokemons
+}
+
+var inMemoryPokemons = []Pokemon{
+	{Name: "Bulbasaur"},
+	{Name: "Charmander"},
+	{Name: "Squirtle"},
+}
+
+func getAllPokemons() []Pokemon {
+	return append(inMemoryPokemons, getPokemonFromEnv()...)
+}
+
+func listPokemonsHandler(w http.ResponseWriter, r *http.Request) {
+	pokemons := getAllPokemons()
+	json.NewEncoder(w).Encode(pokemons)
+}
+
+func main() {
+	http.HandleFunc("/", listPokemonsHandler)
 	http.ListenAndServe(":8080", nil)
 }
