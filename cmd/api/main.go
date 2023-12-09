@@ -57,6 +57,9 @@ func printRoleLabel() {
 	podName := os.Getenv("POD_NAME")
 	namespace := os.Getenv("NAMESPACE")
 
+	fmt.Println(podName)
+	fmt.Println(namespace)
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -72,5 +75,6 @@ func printRoleLabel() {
 
 func main() {
 	http.HandleFunc("/", listPokemonsHandler)
+	fmt.Println("Pokemons are out")
 	http.ListenAndServe(":8080", nil)
 }
