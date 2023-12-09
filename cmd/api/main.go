@@ -32,9 +32,14 @@ func getAllPokemons() []Pokemon {
 	return append(inMemoryPokemons, getPokemonFromEnv()...)
 }
 
+type PokemonsResponse struct {
+	Pokemons []Pokemon `json:"pokemons"`
+}
+
 func listPokemonsHandler(w http.ResponseWriter, r *http.Request) {
 	pokemons := getAllPokemons()
-	json.NewEncoder(w).Encode(pokemons)
+	response := PokemonsResponse{Pokemons: pokemons}
+	json.NewEncoder(w).Encode(response)
 }
 
 func main() {
