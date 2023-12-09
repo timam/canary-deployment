@@ -1,4 +1,4 @@
-# Pokemons
+# Pokemon
 
 ## Overview
 This is a simple application that demonstrates Active Preview deployment strategy. 

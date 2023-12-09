@@ -1,3 +1,3 @@
-module github.com/timam/pokemons/api
+module github.com/timam/pokemon/api
 
 go 1.21
