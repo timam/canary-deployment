@@ -33,3 +33,35 @@ jobs:
         run: |
           docker buildx create --use
           docker buildx build --platform ${{ matrix.platform }} --tag timam/pokemon-api:${{ github.sha }} --push .
+          
+  deploy:
+    runs-on: ubuntu-latest
+    name: Update deployment repository
+    needs: build-push-artifact
+
+    steps:
+      - uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY_PRIVATE }}
+
+      - name: Checkout pokemon-deployments repo
+        uses: actions/checkout@v4
+        with:
+          repository: timam/pokemon-deployments
+          path: pokemon-deployments
+          ssh-key: ${{ secrets.SSH_KEY_PRIVATE }}
+
+      - name: Modify pokemon-api image tag
+        run: |
+          cat <<EOF > ${{ github.workspace }}/pokemon-deployments/api/dev/values_tag.yaml
+          deployment:
+            docker_image_tag: ${{ github.sha }}
+          EOF
+
+      - name: Commit & Push changes
+        run: |
+          git -C ${{ github.workspace }}/pokemon-deployments config user.email "porygon@pokemon.com"
+          git -C ${{ github.workspace }}/pokemon-deployments config user.name "Robot Pokemon"
+          git -C ${{ github.workspace }}/pokemon-deployments add ${{ github.workspace }}/pokemon-deployments
+          git -C ${{ github.workspace }}/pokemon-deployments commit -m "${{ github.event.head_commit.message }}"
+          git -C ${{ github.workspace }}/pokemon-deployments push
