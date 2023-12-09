@@ -1,4 +1,4 @@
-name: Deploy pokemon API
+name: Deploy pokemon-api API
 
 on:
   push:
