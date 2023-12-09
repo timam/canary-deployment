@@ -1,10 +1,16 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 )
 
 type Pokemon struct {
@@ -37,9 +43,31 @@ type PokemonsResponse struct {
 }
 
 func listPokemonsHandler(w http.ResponseWriter, r *http.Request) {
+	printAnnotations()
+
 	pokemons := getAllPokemons()
 	response := PokemonsResponse{Pokemons: pokemons}
 	json.NewEncoder(w).Encode(response)
+}
+
+func printAnnotations() {
+	config, _ := rest.InClusterConfig()
+	clientset, _ := kubernetes.NewForConfig(config)
+
+	podName := os.Getenv("POD_NAME")
+	namespace := os.Getenv("NAMESPACE")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	pod, _ := clientset.CoreV1().Pods(namespace).Get(ctx, podName, metav1.GetOptions{})
+	annotations := pod.GetAnnotations()
+
+	for key, value := range annotations {
+		fmt.Printf("%s: %s\n", key, value)
+	}
+
+	cancel() // Cancel the context as soon as we're done with it
 }
 
 func main() {
