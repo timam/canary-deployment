@@ -30,7 +30,7 @@ func podDetails() {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(pod)
+	log.Println(pod.ObjectMeta.Labels)
 
 	defer cancel()
 
