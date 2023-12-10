@@ -47,6 +47,7 @@ func listPokemonsHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", listPokemonsHandler)
+	http.HandleFunc("/healthz", healthz)
 	fmt.Println("Pokemons are out")
 	http.ListenAndServe(":8080", nil)
 }
