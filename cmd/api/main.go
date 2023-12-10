@@ -1,16 +1,11 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 )
 
 type Pokemon struct {
@@ -43,34 +38,11 @@ type PokemonsResponse struct {
 }
 
 func listPokemonsHandler(w http.ResponseWriter, r *http.Request) {
-	printRoleLabel()
+	podDetails()
 
 	pokemons := getAllPokemons()
 	response := PokemonsResponse{Pokemons: pokemons}
 	json.NewEncoder(w).Encode(response)
-}
-
-func printRoleLabel() {
-	config, _ := rest.InClusterConfig()
-	clientset, _ := kubernetes.NewForConfig(config)
-
-	podName := os.Getenv("POD_NAME")
-	namespace := os.Getenv("NAMESPACE")
-
-	fmt.Println(podName)
-	fmt.Println(namespace)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
-
-	pod, _ := clientset.CoreV1().Pods(namespace).Get(ctx, podName, metav1.GetOptions{})
-	labels := pod.GetLabels()
-
-	if role, ok := labels["role"]; ok {
-		fmt.Println(role)
-	}
-
-	cancel() // Cancel the context as soon as we're done with it
 }
 
 func main() {
