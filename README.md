@@ -9,3 +9,4 @@ The application is named 'Pokémons' and it shows list of available Pokemons fro
 
 It also leverages argo rollout's active preview functionality. 
 
+
